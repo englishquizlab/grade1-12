@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Quiz Lab</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#1b1f2a;--mut:#667085;--line:#e3e6ee;--pri:#4f46e5;--priInk:#fff;--ok:#12a150;--okBg:#e6f6ec;--no:#d92d20;--noBg:#fdeceb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141b;--card:#1c1f29;--ink:#eef0f6;--mut:#9aa1b2;--line:#2c3040;--pri:#818cf8;--priInk:#12141b;--okBg:#12301f;--noBg:#3a1a18;--ok:#4ade80;--no:#f87171;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12141b;--card:#1c1f29;--ink:#eef0f6;--mut:#9aa1b2;--line:#2c3040;--pri:#818cf8;--priInk:#12141b;--okBg:#12301f;--noBg:#3a1a18;--ok:#4ade80;--no:#f87171;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Pretendard","Noto Sans KR",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.6rem;margin:8px 0 4px}.sub{color:var(--mut);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(4,1fr)}}
+label{display:block;font-size:.8rem;color:var(--mut);margin-bottom:4px;font-weight:600}
+select,textarea,input[type=text]{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 16px;background:var(--pri);color:var(--priInk);font-weight:700}
+button.ghost{background:transparent;color:var(--pri);border:1px solid var(--pri)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{display:inline-block;font-size:.75rem;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:1px 10px;color:var(--mut);margin-right:6px}
+.pass{background:var(--bg);border-left:4px solid var(--pri);padding:10px 12px;border-radius:6px;margin:8px 0;white-space:pre-wrap}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--line);margin-top:8px;font-weight:500}
+.opt.sel{border-color:var(--pri);box-shadow:0 0 0 2px var(--pri) inset}
+.opt.ok{background:var(--okBg);border-color:var(--ok)}.opt.no{background:var(--noBg);border-color:var(--no)}
+.exp{margin-top:10px;font-size:.92rem;color:var(--mut);white-space:pre-wrap}
+.score{font-size:1.4rem;font-weight:800}
+.msg{color:var(--mut);text-align:center;padding:24px}
+.err{color:var(--no)}
+.xbox{margin-top:12px;border-top:1px dashed var(--line);padding-top:6px}.xbox h4{margin:14px 0 6px;font-size:1rem}.ch{padding:3px 0;border-bottom:1px solid var(--line)}.ch .en{font-weight:700}.ch .sl{color:var(--pri);font-weight:800}.ch .ko{color:var(--mut)}.wd,.gm{padding:6px 0;border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:700}.vs2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}button.act{background:var(--pri);color:var(--priInk)}
+.qq{margin:26px 0 32px;line-height:1.7}.opt{margin-top:10px}
+</style></head><body><main>
+<h1>📘 English Quiz Lab</h1>
+<p class="sub">초1~고3 · 단어·문법·독해·리스닝·스피킹·라이팅 · 매번 새로운 주제로 AI가 문제를 만들어 드립니다.</p>
+<div class="card"><div class="grid">
+<div><label for="g">학년</label><select id="g"></select></div>
+<div><label for="s">영역</label><select id="s"></select></div>
+<div><label for="d">난이도</label><select id="d"><option value="easy">Easy</option><option value="moderate" selected>Moderate</option><option value="hard">Hard</option></select></div>
+<div><label for="n">문항 수</label><select id="n"><option>3</option><option selected>5</option><option>10</option></select></div>
+</div><div class="row" style="margin-top:14px"><button id="go">퀴즈 만들기</button><span id="st" class="sub" style="margin:0"></span></div></div>
+<details class="card" id="vs" hidden><summary>🔊 음성 설정 (더 자연스러운 목소리 고르기)</summary><div class="vs2"><div><label for="vf">여자 목소리</label><select id="vf"></select></div><div><label for="vm">남자 목소리</label><select id="vm"></select></div></div><p class="sub" style="margin:10px 0 0;font-size:.85rem">기기에 설치된 목소리 중에서 고릅니다. 이름에 Natural·Neural·Online(Edge/Windows)이나 Premium·Enhanced(iPhone/Mac)가 붙은 목소리가 가장 자연스러워요.</p></details><div id="out"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const GR=["초등 1학년","초등 2학년","초등 3학년","초등 4학년","초등 5학년","초등 6학년","중1","중2","중3","고1","고2","고3"];
+const SK={vocab:"단어",grammar:"문법",reading:"독해",listening:"리스닝",speaking:"스피킹",writing:"라이팅"};
+const TOPICS=["space travel","street food","ocean pollution","a school festival","robots","the Olympics","rainforests","a rainy day","video games","a farmer's market","volcanoes","friendship","a lost dog","the history of bicycles","recycling","a museum visit","music and emotions","sleep and health","a camping trip","dinosaurs","a new neighbor","coral reefs","smartphones and privacy","a bakery","honeybees","soccer","a summer job","the moon","traditional festivals","climate and weather","volunteering","a haunted house story","electric cars","a library","space food","a birthday surprise","deserts","cartoons","public transportation","a science fair","penguins","time management","coffee and tea","an airport","earthquakes","a talent show","a mountain hike","social media","a hospital visit","a rooftop garden"];
+GR.forEach((x,i)=>g.add(new Option(x,i)));Object.entries(SK).forEach(([k,v])=>s.add(new Option(v,k)));
+const shuf=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+function lvl(i,d){const base=["pre-A1: alphabet-level, 1-3 word phrases, 3-4 letter words","A1: very simple 3-5 word sentences","A1: simple present sentences, daily-life words","A1+: short 5-8 word sentences, basic past/future","A2: short paragraphs, 400-word elementary vocabulary","A2+: elementary-school-graduate level","A2+/B1-: Korean middle school year 1 textbook level","B1-: middle school year 2 level","B1: middle school year 3 level","B1+: Korean high school year 1 (suneung-prep basics)","B2-: high school year 2 level","B2: high school year 3, CSAT (수능) level"][i];const adj={easy:"Make it a bit easier than typical for this level.",moderate:"Typical difficulty for this level.",hard:"Make it clearly harder than typical for this level (more distractors, inference, less common vocabulary)."}[d];return base+". "+adj}
+const SPEC={
+vocab:'Each item: {"topic","question":"a vocabulary question (meaning, synonym, or fill-in-the-blank word choice) using a short context sentence","options":[4 strings],"answer":0-3 index,"explanation":"Korean explanation"}',
+grammar:'Each item: {"topic","question":"a sentence with a grammar blank or error-finding task","options":[4 strings],"answer":0-3,"explanation":"Korean explanation naming the grammar point"}',
+reading:'Each item has its OWN short original passage: {"topic","passage":"passage text with length suited to the level (1-2 sentences for lowest grades up to ~150 words for high school)","question":"comprehension question","options":[4],"answer":0-3,"explanation":"Korean explanation"}',
+listening:'Each item: {"topic","turns":[{"speaker":"female or male","text":"one spoken turn in plain natural English with contractions, no speaker labels"}],"question":"question about what was heard","options":[4],"answer":0-3,"explanation":"Korean explanation of the answer","script_ko":"Korean translation of the whole script, one line per turn prefixed 여자:/남자: (no prefix for a monologue)","notes":"Korean explanation of key expressions and listening points"}. Use a dialogue between a woman and a man (alternating turns) or a one-person monologue; length by level.',
+speaking:'Each item: {"topic","situation":"Korean description of the situation","target":"an English sentence or short passage for the student to read aloud, length by level","tip":"Korean pronunciation/intonation tip"}',
+writing:'Each item: {"topic","prompt":"Korean+English instruction for a writing task (e.g. rearrange words, translate to English, write 1-N sentences about the topic) with a clear word/sentence limit suited to the level","model":"model English answer","points":"Korean grading points"}'};
+let items=[],skill="",ans=[],done=false;
+const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let VO=[];
+const FEM=/female|woman|aria|jenny|ava|emma|michelle|samantha|allison|susan|zira|karen|moira|tessa|serena|kate|jessica|sonia|libby|nicole|joanna|salli|victoria|fiona|heather/i;
+const MAL=/\bmale\b|guy|davis|eric|roger|christopher|alex|daniel|fred|david|mark|tom|oliver|aaron|ryan|brian|george|james|matthew|joey|arthur|rishi|steffan/i;
+const q=v=>(/natural|neural|online/i.test(v.name)?4:/premium|enhanced|siri/i.test(v.name)?3:/google/i.test(v.name)?2:v.localService?0:1)+(/en-US/i.test(v.lang)?.5:0);
+function best(x){return VO.filter(v=>x==="f"?FEM.test(v.name):(MAL.test(v.name)&&!FEM.test(v.name))).sort((a,b)=>q(b)-q(a))[0]}
+const GUS=()=>VO.find(v=>/^google us english$/i.test(v.name))||VO.find(v=>/google.*us english/i.test(v.name));
+function getV(x){const n=LS.get("vo_"+x);return VO.find(v=>v.name===n)||GUS()||best(x)||null}
+function fillV(){["f","m"].forEach(x=>{const el=$("v"+x);if(!el)return;const b=GUS()||best(x);el.innerHTML="";el.add(new Option("자동 추천"+(b?" ("+b.name+")":""),""));[...VO].sort((a,b)=>q(b)-q(a)).forEach(v=>el.add(new Option(v.name+" ("+v.lang+")",v.name)));el.value=LS.get("vo_"+x)||"";el.onchange=()=>LS.set("vo_"+x,el.value)})}
+function loadV(){try{VO=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang))}catch(e){}fillV()}
+try{speechSynthesis.onvoiceschanged=loadV}catch(e){}loadV();
+function speakTurns(turns,gi){try{speechSynthesis.cancel();turns.forEach(t=>{const f=t.speaker!=="male",u=new SpeechSynthesisUtterance(t.text),vf=getV("f"),vm=getV("m"),same=!vm||vm===vf,v=f?vf:(vm||vf);if(v){u.voice=v;u.lang=v.lang}else u.lang="en-US";if(!f&&(!v||same))u.pitch=.6;u.rate=gi<3?.8:gi<8?.9:.97;speechSynthesis.speak(u)})}catch(e){}}
+function speak(t,i){speakTurns([{speaker:"female",text:t}],i)}
+const PB={v:null,vn:"",cal:{},nat:false,q:[],i:0,off:0,base:0,pos:0,bseen:false,rate:1,t0:0,st:"stop",tok:0,key:-1,gi:0};
+function pbUI(){document.querySelectorAll('[id^="pt"]').forEach(b=>{const m=b.id==="pt"+PB.key,st=m?PB.st:"stop";b.textContent=st==="play"?"⏸ 일시정지":st==="pause"?"▶ 이어서 재생":b.dataset.l;b.classList.toggle("act",st!=="stop")})}
+function pbStop(){PB.st="stop";PB.tok++;PB.i=0;PB.off=0;try{speechSynthesis.cancel();speechSynthesis.resume()}catch(e){}pbUI()}
+function pbPos(){const t=PB.q[PB.i];if(!t)return 0;const x=t.text;let p;if(PB.bseen)p=PB.pos;else{const cal=PB.cal[PB.vn];p=PB.base+Math.floor((performance.now()-PB.t0)/1000*(cal||14)*PB.rate);p=x.lastIndexOf(" ",Math.max(p-1,0))+1;if(!cal)p=x.lastIndexOf(" ",Math.max(p-2,0))+1}return Math.max(Math.min(p,x.length),PB.base)}
+function pbNext(){if(PB.st!=="play")return;
+ let t=PB.q[PB.i];while(t&&PB.off>=t.text.length-1){PB.i++;PB.off=0;t=PB.q[PB.i]}
+ if(!t){PB.st="stop";PB.i=0;PB.off=0;pbUI();return}
+ const tok=++PB.tok,gi=PB.gi,f=t.speaker!=="male",u=new SpeechSynthesisUtterance(t.text.slice(PB.off)),vf=getV("f"),vm=getV("m"),same=!vm||vm===vf,v=f?vf:(vm||vf);
+ if(v){u.voice=v;u.lang=v.lang}else u.lang="en-US";if(!f&&(!v||same))u.pitch=.6;u.rate=gi<3?.8:gi<8?.9:.97;
+ PB.base=PB.off;PB.bseen=false;PB.rate=u.rate;PB.t0=performance.now();PB.nat=false;PB.v=v;PB.vn=v?v.name:"default";const sl=u.text.length;
+ u.onstart=()=>{if(tok===PB.tok)PB.t0=performance.now()};
+ u.onboundary=e=>{if(tok===PB.tok){PB.bseen=true;PB.pos=PB.base+e.charIndex}};
+ u.onend=()=>{if(tok===PB.tok&&PB.st==="play"){const el=(performance.now()-PB.t0)/1000;if(!PB.bseen&&!PB.nat&&el>.6&&sl>15)PB.cal[PB.vn]=sl/el/PB.rate;PB.i++;PB.off=0;pbNext()}};
+ try{speechSynthesis.cancel();speechSynthesis.resume()}catch(e){}
+ setTimeout(()=>{if(tok===PB.tok&&PB.st==="play"){try{speechSynthesis.speak(u)}catch(e){}}},60)}
+function ctl(i,a){const it=items[i];
+ if(a==="s"){pbStop();return}
+ if(PB.key===i&&PB.st==="play"){const S=speechSynthesis;if(PB.v&&PB.v.localService){PB.nat=true;try{S.pause()}catch(e){}}else{PB.nat=false;PB.off=pbPos();PB.tok++;try{S.cancel()}catch(e){}}PB.st="pause";pbUI();return}
+ if(PB.key===i&&PB.st==="pause"){PB.st="play";pbUI();if(PB.nat){try{speechSynthesis.resume()}catch(e){}}else pbNext();return}
+ const T=it.turns||[{speaker:"female",text:it.passage}];
+ PB.q=T.flatMap(t=>String(t.text).split(/(?<=[.!?])\s+/).filter(Boolean).map(x=>({speaker:t.speaker,text:x})));PB.i=0;PB.off=0;PB.key=i;PB.gi=+g.value;PB.st="play";PB.tok++;pbUI();pbNext()}
+function lt(i,k){const el=$("l"+k+i);el.hidden=!el.hidden;$("lb_"+k+i).classList.toggle("act",!el.hidden)}
+const BANK={
+"2_vocab":[[0,"Which word means '사과'?",["apple","banana","grape","melon"],0,"apple은 사과예요."],[1,"She is my ___. She is my mom's sister.",["aunt","uncle","cousin","niece"],0,"엄마의 자매는 aunt(이모)예요."],[2,"It's cold. I need a ___.",["scarf","sandal","swimsuit","fan"],0,"추우니까 scarf(목도리)가 필요해요."]],
+"2_grammar":[[0,"I ___ a student.",["am","is","are","be"],0,"I 다음에는 am을 써요."],[1,"She ___ to school every day.",["go","goes","going","gone"],1,"3인칭 단수 현재형은 goes예요."],[2,"There ___ two cats on the sofa.",["is","are","am","be"],1,"two cats가 복수라서 are를 써요."]],
+"5_vocab":[[0,"'borrow'의 뜻은?",["빌리다","빌려주다","사다","팔다"],0,"borrow=빌리다, lend=빌려주다."],[1,"The test was very ___. I got 100 points.",["easy","heavy","sad","noisy"],0,"100점을 받았으니 쉬웠다(easy)는 뜻이에요."],[2,"Which is closest to 'enormous'?",["tiny","huge","quiet","early"],1,"enormous=huge(거대한)."]],
+"5_grammar":[[0,"I ___ breakfast an hour ago.",["have","had","has","having"],1,"ago는 과거 표현이라 had를 써요."],[1,"He is taller ___ his brother.",["than","then","as","that"],0,"비교급 뒤에는 than을 써요."],[2,"If it ___ tomorrow, we will stay home.",["rains","will rain","rained","rain"],0,"조건절에서는 미래 대신 현재형을 써요."]],
+"7_vocab":[[0,"'celebrate'의 뜻은?",["축하하다","포기하다","비교하다","걱정하다"],0,"celebrate=축하하다."],[1,"We should ___ energy to protect the Earth.",["save","waste","lose","spend"],0,"지구를 지키려면 에너지를 절약(save)해야 해요."],[2,"'Ancient' is the opposite of ___.",["modern","old","huge","rare"],0,"ancient(고대의)의 반대는 modern(현대의)이에요."]],
+"7_grammar":[[0,"The window ___ by Tom yesterday.",["broke","was broken","is broken","breaks"],1,"과거 수동태는 was/were + p.p.예요."],[1,"I want ___ a pilot in the future.",["be","to be","being","am"],1,"want 뒤에는 to부정사가 와요."],[2,"She asked me ___ I liked pizza.",["if","that","what","which"],0,"yes/no 간접의문문은 if/whether로 연결해요."]],
+"9_vocab":[[0,"The company will ___ its new product next month.",["launch","reject","imitate","hesitate"],0,"launch=출시하다."],[1,"His ___ speech moved the entire audience.",["sincere","random","fragile","vague"],0,"sincere=진심 어린."],[2,"'inevitable'과 의미가 가장 가까운 것은?",["unavoidable","unlikely","unusual","unstable"],0,"inevitable=unavoidable(피할 수 없는)."]],
+"9_grammar":[[0,"The book ___ I bought yesterday is interesting.",["which","what","who","where"],0,"선행사가 사물(book)이므로 which예요."],[1,"If I ___ you, I would apologize first.",["were","am","was being","will be"],0,"가정법 과거는 If I were you로 써요."],[2,"Not until he left ___ I realize his value.",["did","do","had","was"],0,"Not until이 문두에 오면 도치돼서 did I realize가 돼요."]],
+"11_vocab":[[0,"His argument was ___, so no one could refute it.",["airtight","trivial","ambiguous","reluctant"],0,"airtight=빈틈없는."],[1,"'mitigate'와 가장 가까운 의미는?",["alleviate","aggravate","accumulate","eliminate"],0,"mitigate=완화하다=alleviate."],[2,"Scientists remain ___ about the drug's long-term effects.",["skeptical","oblivious","lenient","jubilant"],0,"skeptical=회의적인."]],
+"11_grammar":[[0,"The more you practice, ___ you become.",["the better","better","the best","best"],0,"the + 비교급, the + 비교급 구문이에요."],[1,"Never ___ such a beautiful sunset.",["have I seen","I have seen","I saw","seen I"],0,"부정어 Never가 문두에 오면 도치돼요."],[2,"The proposal, ___ details were unclear, was rejected.",["whose","which","that","whom"],0,"details가 proposal의 것이므로 소유격 whose예요."]]};
+Object.assign(BANK,{
+"0_vocab":[[0,"'cat'은 무엇일까요?",["고양이","강아지","토끼","새"],0,"cat은 고양이예요."],[1,"Which one is a fruit?",["banana","chair","pencil","bag"],0,"banana는 과일이에요."],[2,"'Monday' 다음 요일은?",["Tuesday","Sunday","Friday","Saturday"],0,"월요일 다음은 Tuesday(화요일)예요."]],
+"0_grammar":[[0,"This is ___ apple.",["an","a","the","is"],0,"모음 소리 앞에는 an을 써요."],[1,"She ___ my friend.",["is","am","are","be"],0,"She 다음에는 is를 써요."],[2,"They ___ students.",["are","is","am","be"],0,"They는 복수라서 are를 써요."]],
+"1_vocab":[[0,"'milk'의 뜻은?",["우유","주스","물","차"],0,"milk는 우유예요."],[1,"Which is an animal?",["rabbit","spoon","desk","shirt"],0,"rabbit은 토끼예요."],[2,"I brush my ___ every morning.",["teeth","hands","eyes","ears"],0,"양치는 teeth(이)를 닦는 거예요."]],
+"1_grammar":[[0,"___ is my brother.",["He","She","They","We"],0,"남자 형제는 He로 말해요."],[1,"Can you ___ the piano?",["play","plays","playing","played"],0,"can 뒤에는 동사원형을 써요."],[2,"What ___ you doing?",["are","is","am","do"],0,"you 다음에는 are를 써요."]],
+"3_vocab":[[0,"'January'는 몇 월일까요?",["1월","2월","11월","12월"],0,"January는 1월이에요."],[1,"It's seven ___. (시각)",["o'clock","Monday","spring","apple"],0,"시각 뒤에는 o'clock을 써요."],[2,"'delicious'의 뜻은?",["맛있는","시끄러운","무거운","느린"],0,"delicious는 맛있는이에요."]],
+"3_grammar":[[0,"He ___ a book now.",["is reading","reads","read","are reading"],0,"now는 현재진행형 신호예요."],[1,"I ___ to the zoo last Sunday.",["went","go","goes","going"],0,"last Sunday는 과거라서 went예요."],[2,"How ___ apples do you have?",["many","much","long","old"],0,"셀 수 있는 명사는 many를 써요."]],
+"4_vocab":[[0,"'dangerous'의 뜻은?",["위험한","안전한","조용한","친절한"],0,"dangerous는 위험한이에요."],[1,"I'm ___ for the exam, so I study hard.",["nervous","sleepy","hungry","sunny"],0,"시험 때문에 긴장한(nervous) 상황이에요."],[2,"'discover'와 가장 가까운 뜻은?",["find out","give up","put on","look like"],0,"discover=발견하다=find out."]],
+"4_grammar":[[0,"She is good ___ singing.",["at","on","to","of"],0,"be good at ~: ~를 잘하다."],[1,"I will visit Jeju ___ summer vacation.",["during","between","across","among"],0,"during+기간: ~동안."],[2,"This is the ___ movie I have ever seen.",["best","good","better","well"],0,"the ... ever seen은 최상급 best와 함께 써요."]],
+"6_vocab":[[0,"'neighbor'의 뜻은?",["이웃","친척","선생님","손님"],0,"neighbor는 이웃이에요."],[1,"The ___ of this bag is 20 dollars.",["price","tale","tool","rule"],0,"price=가격."],[2,"He is very ___. He always helps others.",["generous","lazy","rude","shy"],0,"generous=너그러운, 베푸는."]],
+"6_grammar":[[0,"There ___ some milk in the fridge.",["is","are","were","be"],0,"milk는 셀 수 없는 명사라서 is예요."],[1,"I have lived here ___ 2020.",["since","for","during","in"],0,"현재완료에서 시작 시점은 since예요."],[2,"The girl ___ is singing is my sister.",["who","which","what","whose"],0,"사람 선행사는 who를 써요."]],
+"8_vocab":[[0,"'environment'의 뜻은?",["환경","경험","정부","경제"],0,"environment는 환경이에요."],[1,"The new law will ___ many people.",["affect","afford","attach","avoid"],0,"affect=영향을 미치다."],[2,"'reduce'의 반대말은?",["increase","decrease","remove","reply"],0,"reduce(줄이다)↔increase(늘리다)."]],
+"8_grammar":[[0,"English ___ in many countries.",["is spoken","speaks","spoke","is speaking"],0,"수동태는 be+p.p.예요."],[1,"I don't know where ___.",["he lives","does he live","lives he","he does live"],0,"간접의문문은 의문사+주어+동사 순서예요."],[2,"She is ___ smart that she solved it easily.",["so","such","too","very"],0,"so+형용사+that 구문이에요."]],
+"10_vocab":[[0,"'efficient'의 뜻은?",["효율적인","불가능한","일시적인","독창적인"],0,"efficient는 효율적인이에요."],[1,"The government plans to ___ new rules next year.",["implement","hesitate","withdraw","exaggerate"],0,"implement=시행하다."],[2,"'ambiguous'와 가장 가까운 뜻은?",["unclear","obvious","brave","gentle"],0,"ambiguous=애매모호한=unclear."]],
+"10_grammar":[[0,"I look forward to ___ you again.",["seeing","see","saw","seen"],0,"look forward to 뒤에는 동명사가 와요."],[1,"The man ___ by the police was released.",["arrested","arresting","arrests","arrest"],0,"수동의 의미라서 과거분사를 써요."],[2,"Had I known the truth, I ___ differently.",["would have acted","would act","will act","acted"],0,"가정법 과거완료의 도치 구문이에요."]],
+"0_reading":[[0,"I have a cat. Its name is Nabi. It is white.","What color is the cat?",["White","Black","Brown","Gray"],0,"It is white.라고 나와 있어요."]],
+"1_reading":[[0,"Mina gets up at seven. She eats breakfast and goes to school.","What does Mina do after breakfast?",["She goes to school.","She plays soccer.","She goes to bed.","She watches TV."],0,"아침을 먹고 학교에 가요."]],
+"3_reading":[[0,"Tom likes sports. He plays soccer on Saturday and swims on Sunday. He wants to be a sports player.","When does Tom swim?",["On Sunday","On Saturday","On Monday","On Friday"],0,"swims on Sunday라고 나와 있어요."]],
+"4_reading":[[0,"Last weekend, Jisu visited her grandmother in Busan. They ate fresh fish at the market and walked along the beach. Jisu had a great time.","Where did Jisu eat fresh fish?",["At the market","At home","On the beach","At school"],0,"ate fresh fish at the market이라고 나와 있어요."]],
+"6_reading":[[0,"Many students feel tired in the morning because they sleep late. Experts say that teenagers need about nine hours of sleep. Going to bed early helps them stay healthy and focused.","What is the main idea?",["Enough sleep is important for teenagers.","Students should wake up early.","Morning exercise is healthy.","Teenagers like to sleep late."],0,"청소년에게 충분한 수면이 중요하다는 내용이에요."]],
+"8_reading":[[1,"Plastic bags take hundreds of years to break down. Many countries now charge money for them to encourage people to use reusable bags. As a result, the amount of plastic waste has decreased.","Why do countries charge money for plastic bags?",["To encourage reusable bags","To make bags cheaper","To sell more plastic","To stop shopping"],0,"to encourage ... reusable bags가 이유예요."]],
+"10_reading":[[2,"Although social media connects people around the world, researchers warn that heavy use can reduce face-to-face communication. Some users feel lonelier despite having hundreds of online friends.","What is the passage mainly about?",["A downside of heavy social media use","The history of the internet","How to make friends online","Benefits of face-to-face classes"],0,"Although로 장점을 인정한 뒤 과도한 사용의 단점을 말해요."]],
+"0_speaking":[[0,"인사하기","Hello! I am Mina.","Hello는 끝을 올려 밝게 말해요."],[1,"좋아하는 동물 말하기","I like dogs.","dogs의 -s 소리를 분명히 내요."]],
+"1_speaking":[[0,"이름 묻기","What is your name?","의문문은 끝을 살짝 올려요."],[1,"나이 말하기","I am eight years old.","eight의 t 소리를 살려요."]],
+"3_speaking":[[0,"요일 말하기","Today is Wednesday.","Wednesday는 '웬즈데이'로 d를 읽지 않아요."],[1,"취미 말하기","I enjoy drawing pictures after school.","enjoy에 강세를 둬요."]],
+"4_speaking":[[0,"주말 계획 말하기","I will visit my grandmother this weekend.","will은 짧고 약하게 읽어요."],[1,"길 묻기","Excuse me, how can I get to the library?","how can I get to를 이어서 읽어요."]],
+"6_speaking":[[0,"자기소개하기","My name is Jun, and I like playing the guitar.","and는 약하게 읽어요."],[1,"주문하기","I would like a cheese sandwich and a glass of orange juice.","would like를 이어서 부드럽게 읽어요."]],
+"8_speaking":[[0,"의견 말하기","I think that students should have more time to relax.","think와 relax에 강세를 둬요."],[1,"경험 말하기","I have never been to a foreign country, but I really want to go.","have never been을 이어서 읽어요."]],
+"10_speaking":[[0,"주장 펼치기","Although technology makes life convenient, we should not depend on it too much.","Although 절 뒤에서 살짝 쉬어요."],[1,"제안하기","If we cooperate with each other, we can solve this problem more efficiently.","If절이 끝나는 곳에서 쉬어 읽어요."]],
+"0_writing":[[0,"영어로 쓰세요: 나는 고양이를 좋아해요.","I like cats.","like와 cats 사용"],[1,"단어를 배열하세요: am / I / Mina","I am Mina.","어순과 대문자"]],
+"1_writing":[[0,"영어로 쓰세요: 나는 여덟 살이에요.","I am eight years old.","be동사와 숫자"],[1,"단어를 배열하세요: has / She / a / bag","She has a bag.","3인칭 단수 has"]],
+"3_writing":[[0,"영어로 쓰세요: 나는 토요일에 축구를 해요.","I play soccer on Saturday.","on+요일"],[1,"영어로 쓰세요: 그는 지금 책을 읽고 있어요.","He is reading a book now.","현재진행형"]],
+"4_writing":[[0,"영어로 쓰세요: 나는 지난 주말에 부산에 갔어요.","I went to Busan last weekend.","과거형 went"],[1,"영어로 쓰세요: 나는 내일 친구를 만날 거예요.","I will meet my friend tomorrow.","will+동사원형"]],
+"6_writing":[[0,"영어로 쓰세요: 나는 서울에서 3년 동안 살았어요.","I have lived in Seoul for three years.","현재완료+for"],[1,"영어로 쓰세요: 그녀는 노래하고 있는 소녀예요.","She is the girl who is singing.","관계대명사 who"]],
+"8_writing":[[0,"영어로 쓰세요: 이 책은 많은 학생들에게 읽힙니다.","This book is read by many students.","수동태"],[1,"영어로 쓰세요: 나는 그가 어디에 사는지 모릅니다.","I don't know where he lives.","간접의문문 어순"]],
+"10_writing":[[0,"영어로 쓰세요: 나는 당신을 다시 만나기를 기대합니다.","I look forward to seeing you again.","look forward to+동명사"],[1,"영어로 쓰세요: 내가 진실을 알았더라면 다르게 행동했을 텐데.","If I had known the truth, I would have acted differently.","가정법 과거완료"]]});
+Object.assign(BANK,{
+"11_reading":[[1,"Scientists have found that people who read fiction tend to show greater empathy. By imagining the thoughts and feelings of characters, readers practice understanding others' perspectives, a skill that carries over into real life.","According to the passage, what is the benefit of reading fiction?",["It improves the ability to understand others.","It increases reading speed.","It helps people memorize facts.","It reduces the need for friends."],0,"소설 독자는 인물의 관점을 상상하며 공감 능력을 키운다고 해요."],[2,"The author argues that convenience has a hidden cost. While online shopping saves time, it also weakens local businesses and increases packaging waste. Therefore, consumers should consider the broader consequences of their choices.","What is the author's main point?",["Convenient choices can have hidden social and environmental costs.","Online shopping is always cheaper.","Local businesses should close.","Packaging waste is easy to recycle."],0,"편리함의 숨은 비용을 지적하고 선택의 결과를 고려하라는 주장이에요."]],
+"11_speaking":[[1,"의견 제시","Despite the challenges, I firmly believe that renewable energy will shape our future.","Despite와 firmly에 강세를 둬요."],[2,"반론하기","While I understand your point, I would argue that the evidence suggests otherwise.","While절 뒤에서 잠깐 쉬어요."]],
+"11_writing":[[1,"영어로 쓰세요: 그 계획이 성공했더라도 비용은 너무 컸을 것이다.","Even if the plan had succeeded, the cost would have been too high.","가정법 과거완료와 양보"],[2,"영어로 쓰세요: 환경을 보호하는 것은 우리 모두의 책임이다.","Protecting the environment is the responsibility of all of us.","동명사 주어"]],
+"9_reading":[[1,"Many teenagers use their smartphones for more than five hours a day. Some experts say this habit makes it hard to concentrate on schoolwork. They suggest turning off notifications while studying.","What do the experts suggest?",["Turning off notifications while studying","Buying a new smartphone","Studying for five hours","Using phones in class"],0,"공부할 때 알림을 끄라고 제안해요."],[2,"Volunteering offers more than help to others. Studies show that volunteers often feel happier and less stressed, because helping gives them a sense of purpose. As a result, many schools now encourage students to join community projects.","Why do volunteers often feel happier?",["Helping gives them a sense of purpose.","They earn more money.","They have more free time.","They study less."],0,"도움을 주며 목적의식을 느끼기 때문이에요."]],
+"9_speaking":[[1,"계획 말하기","I'm planning to join the school orchestra because I love playing the violin.","planning과 violin에 강세를 둬요."],[2,"제안하기","How about organizing a charity event to help our local community?","How about 끝은 올려 말해요."]],
+"9_writing":[[1,"영어로 쓰세요: 나는 어제 산 책을 읽고 있다.","I am reading the book that I bought yesterday.","관계대명사 that"],[2,"영어로 쓰세요: 규칙적으로 운동하는 것은 건강에 좋다.","Exercising regularly is good for your health.","동명사 주어"]],
+"7_reading":[[0,"Tom is new at school. He felt shy on the first day, but his classmates were kind. They asked him to join their soccer game, and now he has many friends.","How does Tom have many friends now?",["His classmates asked him to join their game.","He changed schools again.","He gave them presents.","He joined a music club."],0,"반 친구들이 축구에 초대해 줬어요."],[1,"Kimchi is a traditional Korean food made of vegetables and spices. It is healthy because it contains many vitamins. These days, people around the world enjoy it.","What is kimchi made of?",["Vegetables and spices","Rice and fish","Meat and bread","Fruit and milk"],0,"vegetables and spices로 만든다고 나와 있어요."]],
+"7_speaking":[[0,"사과하기","I'm sorry that I was late for the class.","sorry는 부드럽게, late는 또렷하게 읽어요."],[1,"조언하기","You should drink more water and get enough sleep.","should는 약하게, water와 sleep에 강세를 둬요."]],
+"7_writing":[[0,"영어로 쓰세요: 나는 수영하는 것을 좋아한다.","I like swimming.","동명사 목적어"],[1,"영어로 쓰세요: 이 가방은 저것보다 더 비싸다.","This bag is more expensive than that one.","비교급"]]});
+const MAPF={vocab:x=>({question:x[1],options:x[2],answer:x[3],explanation:x[4]}),reading:x=>({passage:x[1],question:x[2],options:x[3],answer:x[4],explanation:x[5]}),speaking:x=>({situation:x[1],target:x[2],tip:x[3]}),writing:x=>({prompt:x[1],model:x[2],points:x[3],bk:1})};MAPF.grammar=MAPF.vocab;
+go.onclick=async()=>{
+ const gi=+g.value,n=+$("n").value;skill=s.value;go.disabled=true;done=false;out.innerHTML='<div class="msg">문제를 만드는 중입니다…</div>';st.textContent="";
+ const useBank=false,B=BANK[gi+"_"+skill];
+ if(useBank&&B){const dl={easy:0,moderate:1,hard:2}[d.value];items=shuf(B.map(x=>[Math.abs(x[0]-dl)+Math.random()*.5,x]).sort((a,b)=>a[0]-b[0]).slice(0,n).map(p=>p[1])).map(x=>({topic:SK[skill],...MAPF[skill](x)})).map(it=>{if(it.options){const c=it.options[it.answer];it.options=shuf(it.options);it.answer=it.options.indexOf(c)}return it});ans=items.map(()=>null);render();go.disabled=false;return}
+ if(useBank)st.textContent="이 학년·영역은 아직 미리 만든 문제가 없어 AI로 만듭니다.";
+ const sample=await (window.claude&&claude.use("sample"));
+ if(!sample){out.innerHTML='<div class="msg err">이 환경에서는 문제 생성 기능을 사용할 수 없습니다. 페이지 권한을 확인해 주세요.</div>';go.disabled=false;return}
+ const tp=shuf(TOPICS).slice(0,n);
+ const prompt=`You are an expert Korean English-teacher creating a quiz for Korean students.
+Grade: ${GR[gi]}. Level: ${lvl(gi,d.value)}
+Skill: ${SK[s.value]}. Create exactly ${n} items. Item k MUST be about topic k (all topics differ, never reuse a topic or passage idea):
+${tp.map((t,k)=>(k+1)+". "+t).join("\n")}
+${SPEC[skill]}
+Rules: English content must match the grade level; explanations/instructions to students in Korean; exactly one correct option; distractors plausible; no answer-position pattern (vary the answer index).
+Return ONLY a JSON array of ${n} objects, no markdown.`;
+ try{const r=await sample.json(prompt,{cache:false});items=Array.isArray(r)?r:(r.items||[]);if(skill==="listening")items.forEach(it=>{if(!Array.isArray(it.turns))it.turns=[{speaker:"female",text:it.script||""}]});ans=items.map(()=>null);render()}
+ catch(e){out.innerHTML='<div class="msg err">문제 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.</div>'}
+ go.disabled=false};
+const esc=t=>String(t??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function render(){pbStop();$("vs").hidden=!["listening","reading"].includes(skill);
+ const gi=+g.value;let h="";
+ items.forEach((it,i)=>{
+  h+=`<div class="card" id="q${i}"><div><span class="tag">Q${i+1}</span><span class="tag">${esc(it.topic)}</span></div>`;
+  if(skill==="reading")h+=`<div class="pass">${esc(it.passage)}</div><div class="row" style="margin-bottom:8px"><button class="ghost" id="pt${i}" data-l="🔊 지문 듣기" onclick="ctl(${i},'t')">🔊 지문 듣기</button><button class="ghost" onclick="ctl(${i},'s')">⏹ 정지</button></div><div class="row">`+[["tr","🇰🇷 전체 해석"],["ch","✂️ 직독직해"],["wd","🔑 주요 단어"],["gm","🧩 주요 문법"]].map(([k,t])=>`<button class="ghost" id="xb${k}${i}" onclick="explain(${i},'${k}')">${t}</button>`).join("")+`</div><div class="xbox" id="ex${i}" hidden></div>`;
+  if(skill==="listening"){const sc=it.turns.map(t=>(it.turns.length>1?(t.speaker==="male"?"👨 Man: ":"👩 Woman: "):"")+esc(t.text)).join("\n");h+=`<div class="row" style="margin:8px 0"><button class="ghost" id="pt${i}" data-l="▶ 재생" onclick="ctl(${i},'t')">▶ 재생</button><button class="ghost" onclick="ctl(${i},'s')">⏹ 정지</button><button class="ghost" id="lb_s${i}" onclick="lt(${i},'s')">📜 영어 대본</button><button class="ghost" id="lb_k${i}" onclick="lt(${i},'k')">🇰🇷 한국어 해설</button></div><div class="pass" id="ls${i}" hidden>${sc}</div><div class="pass" id="lk${i}" hidden>${esc(it.script_ko)}\n\n💡 ${esc(it.notes)}</div>`}
+  if(skill==="speaking"){h+=`<p style="margin-bottom:22px">${esc(it.situation)}</p><div class="pass">${esc(it.target)}</div><div class="row"><button class="ghost" onclick="speak(items[${i}].target,${gi})">▶ 원어민 발음</button><button class="ghost" id="rb${i}" onclick="rec(${i})">🎤 따라 읽기</button></div><div class="sub" id="rs${i}" style="margin:6px 0 0;font-size:.85rem"></div><label style="margin-top:10px" for="a${i}">인식된 내용(직접 입력도 가능)</label><input type="text" id="a${i}" oninput="ans[${i}]=this.value">`}
+  else if(skill==="writing"){h+=`${(()=>{const p=it.prompt,k=p.indexOf(": ");return k>0?`<p style="margin-bottom:22px">${esc(p.slice(0,k+1))}</p><p><b>${esc(p.slice(k+2))}</b></p>`:`<p>${esc(p)}</p>`})()}<textarea rows="3" id="a${i}" oninput="ans[${i}]=this.value" placeholder="영어로 작성하세요"></textarea>`}
+  else{h+=`<p class="qq"><b>${esc(it.question)}</b></p>`+(it.options||[]).map((o,k)=>`<button class="opt" id="o${i}_${k}" onclick="pick(${i},${k})">${"ABCD"[k]}. ${esc(o)}</button>`).join("")}
+  h+=`<div class="exp" id="e${i}" hidden></div></div>`});
+ h+=`<div class="row"><button id="sub" onclick="submit()">채점하기</button><button class="ghost" onclick="go.click()">새 문제</button></div><div id="res"></div>`;
+ out.innerHTML=h}
+async function explain(i,sec){
+ const it=items[i],box=$("ex"+i),K=["tr","ch","wd","gm"];
+ const show=()=>{K.forEach(k=>{const el=$("x"+k+i);const on=k===sec&&el.hidden;el.hidden=!on;$("xb"+k+i).classList.toggle("act",on)});box.hidden=!K.some(k=>!$("x"+k+i).hidden)};
+ if(it.xh){show();return}
+ if(it.xl)return;it.xl=1;box.hidden=false;box.innerHTML='<div class="msg">해설을 만드는 중…</div>';
+ try{const sample=await claude.use("sample");
+  const r=await sample.json(`You are a Korean English teacher. Explain this reading passage for a Korean ${GR[+g.value]} student. Write all explanations in Korean.\nPassage:\n${it.passage}\n\nReturn ONLY a JSON object: {"translation":"natural Korean translation of the whole passage","chunks":[{"en":"English meaning chunk (phrase/clause, in original order)","ko":"literal Korean for that chunk, in English word order, for 직독직해"}],"words":[{"word":"key word or phrase","pos":"part of speech","meaning":"Korean meaning in this context","note":"short tip, synonym or example"}],"grammar":[{"point":"grammar point name","sentence":"the sentence from the passage","explanation":"clear Korean explanation suited to the grade"}]}\nCover the WHOLE passage in chunks. Give 4-8 key words and 2-4 grammar points suited to the level.`,{cache:true});
+  const L=(a,f)=>(a||[]).map(f).join("");
+  box.innerHTML=`<div id="xtr${i}" hidden><h4>🇰🇷 전체 해석</h4><p>${esc(r.translation)}</p></div>`+
+   `<div id="xch${i}" hidden><h4>✂️ 직독직해</h4>${L(r.chunks,c=>`<div class="ch"><span class="en">${esc(c.en)}</span> <span class="sl">/</span> <span class="ko">${esc(c.ko)}</span></div>`)}</div>`+
+   `<div id="xwd${i}" hidden><h4>🔑 주요 단어</h4>${L(r.words,w=>`<div class="wd"><b>${esc(w.word)}</b> <span class="tag">${esc(w.pos)}</span> ${esc(w.meaning)}<div class="sub" style="margin:0;font-size:.85rem">${esc(w.note)}</div></div>`)}</div>`+
+   `<div id="xgm${i}" hidden><h4>🧩 주요 문법</h4>${L(r.grammar,x=>`<div class="gm"><b>${esc(x.point)}</b><div class="pass" style="margin:6px 0">${esc(x.sentence)}</div>${esc(x.explanation)}</div>`)}</div>`;
+  it.xh=1;it.xl=0;show()}
+ catch(e){it.xl=0;box.innerHTML='<div class="msg err">해설을 만들지 못했어요. 다시 눌러 주세요.</div>'}}
+function pick(i,k){if(done)return;ans[i]=k;items[i].options.forEach((_,j)=>$(`o${i}_${j}`).classList.toggle("sel",j===k))}
+let RC=null;
+function rec(i){
+ const st=$("rs"+i),b=$("rb"+i),R=window.SpeechRecognition||window.webkitSpeechRecognition;
+ const say=(t,e)=>{st.textContent=t;st.className="sub"+(e?" err":"")};
+ if(RC){try{RC.stop()}catch(e){}return}
+ if(!R){say("이 브라우저는 음성 인식을 지원하지 않아요. 크롬·엣지·사파리에서 열거나 아래에 직접 입력해 주세요.",1);return}
+ pbStop();
+ const r=new R();RC=r;r.lang="en-US";r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+ r.onstart=()=>{b.textContent="⏹ 녹음 중… (누르면 종료)";b.classList.add("act");say("듣고 있어요. 문장을 읽어 주세요.")};
+ r.onresult=e=>{let t="";for(const x of e.results)t+=x[0].transcript;$("a"+i).value=t;ans[i]=t};
+ r.onerror=e=>{const m={"not-allowed":"마이크 사용이 차단되어 있어요. 주소창의 마이크 권한을 허용하거나, 이 페이지를 새 탭에서 열어 주세요.","service-not-allowed":"이 환경에서는 음성 인식을 쓸 수 없어요. 새 탭에서 열거나 직접 입력해 주세요.","no-speech":"음성이 들리지 않았어요. 다시 눌러 말해 보세요.","audio-capture":"마이크를 찾을 수 없어요.","network":"음성 인식 서버에 연결하지 못했어요."};say(m[e.error]||("음성 인식 오류: "+e.error),1)};
+ r.onend=()=>{RC=null;b.textContent="🎤 따라 읽기";b.classList.remove("act");if(!st.classList.contains("err"))say("인식 완료! 아래 내용을 확인하고 채점하세요.")};
+ try{r.start()}catch(e){RC=null;say("녹음을 시작할 수 없어요: "+e.message,1)}}
+const W=t=>String(t).toLowerCase().replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(Boolean);
+async function submit(){
+ done=true;$("sub").disabled=true;let pts=0;const n=items.length;
+ const show=(i,ok,html)=>{const e=$("e"+i);e.hidden=false;e.innerHTML=html;$("q"+i).style.borderColor=ok?"var(--ok)":"var(--no)"};
+ if(skill==="speaking"){items.forEach((it,i)=>{const t=W(it.target),a=new Set(W(ans[i]||""));const m=t.filter(w=>a.has(w)).length/t.length,ok=m>=.7;pts+=ok?1:0;show(i,ok,`${ok?"✅":"❌"} 일치율 ${Math.round(m*100)}% (70% 이상 통과)\n💡 ${esc(it.tip)}`)})}
+ else if(skill==="writing"&&items[0].bk){items.forEach((it,i)=>{const t=W(it.model),a=new Set(W(ans[i]||"")),m=t.filter(w=>a.has(w)).length/t.length,ok=m>=.6;pts+=ok?1:0;show(i,ok,`${ok?"✅":"✏️"} 핵심 단어 일치율 ${Math.round(m*100)}% (60% 이상 통과)\n🎯 ${esc(it.points)}\n\n📝 모범 답안: ${esc(it.model)}`)})}
+ else if(skill==="writing"){res.innerHTML='<div class="msg">AI가 작문을 채점하는 중…</div>';
+  try{const sample=await claude.use("sample");const r=await sample.json(`Grade these Korean student's English writing answers (grade ${GR[+g.value]}). For each, give score 0-100 and 2-3 sentences of constructive feedback in Korean (strength, one correction, a better version). Input: ${JSON.stringify(items.map((it,i)=>({task:it.prompt,model:it.model,points:it.points,student:ans[i]||""})))}. Return ONLY a JSON array [{"score":number,"feedback":string}] in order.`,{cache:false});
+  items.forEach((it,i)=>{const x=r[i]||{score:0,feedback:""},ok=x.score>=60;pts+=ok?1:0;show(i,ok,`${ok?"✅":"✏️"} ${x.score}점\n${esc(x.feedback)}\n\n📝 모범 답안: ${esc(it.model)}`)})}
+  catch(e){res.innerHTML='<div class="msg err">채점에 실패했어요. 다시 시도해 주세요.</div>';done=false;$("sub").disabled=false;return}}
+ else{items.forEach((it,i)=>{const ok=ans[i]===it.answer;pts+=ok?1:0;it.options.forEach((_,k)=>{const b=$(`o${i}_${k}`);if(k===it.answer)b.classList.add("ok");else if(k===ans[i])b.classList.add("no")});show(i,ok,`${ok?"✅ 정답!":"❌ 오답"}\n${esc(it.explanation)}`)})}
+ res.innerHTML=`<div class="card" style="margin-top:14px"><div class="score">${pts} / ${n}점</div><div class="sub">${pts===n?"완벽해요! 🎉":pts>=n/2?"잘했어요! 틀린 문제를 복습해 보세요.":"괜찮아요, 해설을 읽고 다시 도전해 보세요 💪"}</div></div>`;
+ res.scrollIntoView({behavior:"smooth"})}
+</script></body></html>
